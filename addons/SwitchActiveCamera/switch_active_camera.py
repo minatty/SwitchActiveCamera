@@ -1,3 +1,4 @@
+from re import S
 import bpy
 from bpy.types import Operator
 
@@ -10,7 +11,7 @@ bl_info = {
     "description": "Switches active camera in a scene",
     "warning": "",
     "doc_url": "",
-    "category": "Add Mesh",
+    "category": "Scene camera",
 }
 
 addon_keymaps = []
@@ -23,8 +24,8 @@ class UI_PT_Panel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("switch_camera.backward")
         layout.operator("switch_camera.forward")
+        layout.operator("switch_camera.backward")
 
 class SwitchSceneCameraForward(bpy.types.Operator):
     """シーンカメラを切り替える(順巡)"""
@@ -35,7 +36,7 @@ class SwitchSceneCameraForward(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
-        switch_camera(1)
+        switch_camera(self, 1)
         return {"FINISHED"}
 
 class SwitchSceneCameraBackward(bpy.types.Operator):
@@ -47,18 +48,22 @@ class SwitchSceneCameraBackward(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        switch_camera(-1)
+        switch_camera(self, -1)
         return {"FINISHED"}
 
-def switch_camera(direction):
+def switch_camera(self, direction):
     cams = [obj for obj in bpy.data.objects if obj.type == "CAMERA" ]
+    if len(cams) <= 0:
+        self.report({'INFO'}, "There is no camera in a scene.")
+        return
+    camsSorted = sorted(cams, key=lambda x: x.name)
     curr_cam_name = bpy.context.scene.camera.name
     curr_cam_idx = 0
-    for idx, cam in enumerate(cams):
+    for idx, cam in enumerate(camsSorted):
         if cam.name == curr_cam_name:
             curr_cam_idx = idx
             break
-    bpy.context.scene.camera = cams[(curr_cam_idx + direction) % len(cams)]
+    bpy.context.scene.camera = cams[(curr_cam_idx + direction) % len(camsSorted)]
 
 classes = (
     SwitchSceneCameraForward,
