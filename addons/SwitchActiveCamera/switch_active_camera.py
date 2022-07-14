@@ -53,17 +53,26 @@ class SwitchSceneCameraBackward(bpy.types.Operator):
 
 def switch_camera(self, direction):
     cams = [obj for obj in bpy.data.objects if obj.type == "CAMERA" ]
+    
+    # カメラが無い場合は終了
     if len(cams) <= 0:
         self.report({'INFO'}, "There is no camera in a scene.")
         return
+    
     camsSorted = sorted(cams, key=lambda x: x.name)
+    
+    # シーンにカメラが設定されていない場合は先頭のカメラを設定して終了
+    if bpy.context.scene.camera is None:
+        bpy.context.scene.camera = camsSorted[0]
+        return
+
     curr_cam_name = bpy.context.scene.camera.name
     curr_cam_idx = 0
     for idx, cam in enumerate(camsSorted):
         if cam.name == curr_cam_name:
             curr_cam_idx = idx
             break
-    bpy.context.scene.camera = cams[(curr_cam_idx + direction) % len(camsSorted)]
+    bpy.context.scene.camera = camsSorted[(curr_cam_idx + direction) % len(camsSorted)]
 
 classes = (
     SwitchSceneCameraForward,
