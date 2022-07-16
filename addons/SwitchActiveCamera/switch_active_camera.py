@@ -6,7 +6,7 @@ bl_info = {
     "name": "SwitchActiveCamera",
     "author": "minatty",
     "version": (1, 0),
-    "blender": (3, 2, 0),
+    "blender": (2, 8, 0),
     "location": "View3D > Camera",
     "description": "Switches active camera in a scene",
     "warning": "",
