@@ -5,10 +5,10 @@ from bpy.types import Operator
 bl_info = {
     "name": "SwitchActiveCamera",
     "author": "minatty",
-    "version": (1, 0),
+    "version": (0, 3),
     "blender": (2, 8, 0),
-    "location": "View3D > Camera",
-    "description": "Switches active camera in a scene",
+    "location": "View3D > Sidebar > View",
+    "description": "Switches active camera in a scene.",
     "warning": "",
     "doc_url": "",
     "category": "Scene camera",
